@@ -14,6 +14,7 @@
   --bg:#EEF3EF; --surface:#FFFFFF; --ink:#132A20; --muted:#5A6E63;
   --brand:#1D4A36; --brand-ink:#FFFFFF; --gold:#E0A526; --gold-soft:#FBEFD2;
   --red:#B23A2E; --red-soft:#F8E1DE; --line:#D5DFD8; --ok:#2E7D4F; --ok-soft:#DDEFE3;
+  --nav-on:#1D4A36; --nav-pill:#FBEFD2;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -23,12 +24,14 @@
     --bg:#0F1A15; --surface:#18261F; --ink:#E6EFE9; --muted:#9BB0A4;
     --brand:#2F6B50; --brand-ink:#FFFFFF; --gold:#F0B83C; --gold-soft:#3A3018;
     --red:#EE7A6C; --red-soft:#3A201D; --line:#2A3B32; --ok:#6FCF97; --ok-soft:#1E3A2A;
+    --nav-on:#F0B83C; --nav-pill:#3A3018;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1A15; --surface:#18261F; --ink:#E6EFE9; --muted:#9BB0A4;
   --brand:#2F6B50; --brand-ink:#FFFFFF; --gold:#F0B83C; --gold-soft:#3A3018;
   --red:#EE7A6C; --red-soft:#3A201D; --line:#2A3B32; --ok:#6FCF97; --ok-soft:#1E3A2A;
+    --nav-on:#F0B83C; --nav-pill:#3A3018;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *,*::before,*::after{box-sizing:inherit}
@@ -125,9 +128,18 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border
   display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
 nav.tabs .in{display:flex;max-width:560px;width:100%}
 nav.tabs button{flex:1;min-width:0;border:0;background:none;padding:10px 0 12px;font-size:10.5px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
-nav.tabs button .ico{font-size:20px;line-height:1}
-nav.tabs button[aria-selected="true"]{color:var(--brand)}
-@media (prefers-color-scheme:dark){ nav.tabs button[aria-selected="true"]{color:var(--gold)} }
+nav.tabs button{position:relative;-webkit-tap-highlight-color:transparent;transition:color .2s}
+nav.tabs button .ico{font-size:20px;line-height:1;padding:4px 12px;border-radius:999px;transition:background-color .2s,transform .15s}
+nav.tabs button::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;border-radius:0 0 3px 3px;background:var(--nav-on);transform:scaleX(0);transition:transform .25s ease}
+nav.tabs button[aria-selected="true"]{color:var(--nav-on);font-weight:800}
+nav.tabs button .ico{filter:grayscale(.7);opacity:.6}
+nav.tabs button[aria-selected="true"] .ico{background:var(--nav-pill);filter:none;opacity:1}
+nav.tabs button[aria-selected="true"]::before{transform:scaleX(1)}
+nav.tabs button:active .ico{transform:scale(.88)}
+nav.tabs button.pop .ico{animation:tabpop .35s ease}
+@keyframes tabpop{0%{transform:scale(.85)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+section.enter{animation:tabin .22s ease-out}
+@keyframes tabin{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 .sync{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:4px}
 .sync i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
@@ -263,7 +275,7 @@ li.changed{font-weight:600}
 .ins ul{margin:4px 0 0;padding-left:18px;font-size:14px}
 section[hidden]{display:none}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -1692,6 +1704,10 @@ function renderAll(){renderToday(); renderTodayExtras(); renderCheckin(); render
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
   document.querySelectorAll('section').forEach(s=>s.hidden=s.id!=='tab-'+b.dataset.tab);
+  // replay the tap pop on the button and the fade-in on the page
+  const sec=document.getElementById('tab-'+b.dataset.tab);
+  [b,sec].forEach((el,i)=>{if(!el) return; const c=i?'enter':'pop'; el.classList.remove(c); void el.offsetWidth; el.classList.add(c);
+    el.addEventListener('animationend',()=>el.classList.remove(c),{once:true});});
   window.scrollTo(0,0); try{localStorage.setItem(KEY+'.tab',b.dataset.tab);}catch(e){}
 });
 try{const t=localStorage.getItem(KEY+'.tab'); if(t){const b=document.querySelector('nav.tabs button[data-tab="'+t+'"]'); if(b) b.click();}}catch(e){}
