@@ -38,17 +38,25 @@ phone's home screen. This file records who it's for and how Claude should help.
   weight stalls for 3 weeks.
 
 ## The tracking app
-Five tabs:
-- **Today:** meal checklist with daily Ghanaian meal ideas, gym-day/rest-day switch that
-  adjusts portions, daily rules, water counter, daily score and streak.
+Source: `app/index.html` (see `app/README.md` for data, capabilities and publishing). Seven tabs:
+- **Today:** meal checklist with daily meal ideas and 1–5 star ratings for lunch and dinner,
+  gym-day/rest-day switch that adjusts portions, daily rules, medication ticks, steps, water,
+  daily score, streak, and a heads-up before usually-weak weekdays.
 - **Plan:** daily template, weekly protein rotation and rules for life.
-- **Workouts:** log Freeletics sessions manually or by scanning a screenshot; weekly minutes
-  and history.
-- **Avoid:** searchable food guide (cut completely, rarely, watch portions, eat freely).
-- **Progress:** weekly adherence, 12-week consistency calendar, weight chart and milestones,
-  waist/hip/thigh measurements, LDL chart and full history.
+- **Market:** weekly shopping list with amounts and prices (GH₵), a meal builder that plans
+  lunch and dinner from what was bought (rotation, ratings and skipped meals), and next-week picks.
+- **Workouts:** Freeletics journey card, screenshot scanning (Claude vision, or on-phone OCR
+  then Claude), manual logging, weekly minutes, strength progress per exercise, history.
+- **Heart:** full lipid panels and LDL chart with the doctor's target, medication list with
+  adherence, side-effect notes, questions for the doctor, and a doctor summary to show or save.
+- **Avoid:** eating-out guide (chop bar, parties, restaurants, street food, drinks) and a
+  searchable food guide.
+- **Progress:** weekly check-in (applies the 3-week stall rule by trimming dinner carbs),
+  Claude-powered Insights over the last 8 weeks, weight chart with milestone date,
+  measurements, 12-week calendar, history, backup/restore.
 
 Data is saved privately to the user's Claude account (artifact storage).
+The artifact viewer blocks `alert()`/`confirm()`, so the app uses in-page messages instead.
 
 ## How Claude should help
 - Keep advice practical and based on Ghanaian foods available locally.
