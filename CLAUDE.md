@@ -5,7 +5,6 @@ A personal health, fitness and meal-plan project. The user built a tracking web 
 phone's home screen. This file records who it's for and how Claude should help.
 
 ## About the user
-- 29-year-old man living in Accra, Ghana.
 - Starting weight: 128 kg (September 2026). Stores fat mainly in buttocks, hips, thighs
   and love handles. Some muscle from past training; about 4 months out of the gym at the start.
 - LDL cholesterol: 10.0 mmol/L. Father, brother and sister all have high cholesterol, so
